@@ -59,7 +59,6 @@
       background: #388e3c;
     }
 
-    /* Fajerwerki */
     .firework {
       position: absolute;
       border-radius: 50%;
@@ -92,6 +91,22 @@
     let martaScore = 0;
     let gameInterval;
 
+    const phrasesMarta = [
+      "Marta leciała do spa... już nie poleci. 🧖‍♀️",
+      "Kto klika Martę?! To przecież solenizantka!",
+      "Marta miała plan ucieczki. Nie wyszło.",
+      "Marta: 0, ty: 1!",
+      "Marta pękła... ze śmiechu. 😂"
+    ];
+
+    const phrasesDominik = [
+      "Dominik właśnie stracił balon... i godność!",
+      "Dominik nie zdążył uciec! 💨",
+      "Ups, Dominik leciał na tort!",
+      "Dominik miał plan, ale nie przewidział twojego palca.",
+      "Balon Dominika poszedł do nieba. 🕊️"
+    ];
+
     function random(min, max) {
       return Math.random() * (max - min) + min;
     }
@@ -107,9 +122,11 @@
 
       balloon.onclick = () => {
         if (isMarta) {
+          alert(phrasesMarta[Math.floor(Math.random() * phrasesMarta.length)]);
           martaScore++;
           martaScoreEl.innerText = martaScore;
         } else {
+          alert(phrasesDominik[Math.floor(Math.random() * phrasesDominik.length)]);
           dominikScore++;
           dominikScoreEl.innerText = dominikScore;
         }
@@ -140,15 +157,38 @@
     }
 
     function showWinner() {
-      const message = "Koniec gry! 🎂\nDominik: " + dominikScore + "\nMarta: " + martaScore + "\n" + getWinner();
+      let message = `Koniec gry! 🎂\nDominik: ${dominikScore}\nMarta: ${martaScore}\n`;
+      message += getWinnerText();
       alert(message);
       launchCelebration();
     }
 
-    function getWinner() {
-      if (dominikScore > martaScore) return "🎈 Dominik wygrywa!";
-      if (martaScore > dominikScore) return "🎈 Marta wygrywa!";
-      return "💞 Remis!";
+    function getWinnerText() {
+      if (dominikScore > martaScore) {
+        const wins = [
+          "🎈 Dominik wygrywa! Prawdopodobnie przez przypadek, ale liczy się efekt.",
+          "🎈 Marta się rozproszyła – Dominik to wykorzystał!",
+          "🎈 Zwycięzca: Dominik! Balonowy boss level.",
+          "🎈 Nie wiem jak, ale Dominik to ogarnął. 💪"
+        ];
+        return wins[Math.floor(Math.random() * wins.length)];
+      }
+      if (martaScore > dominikScore) {
+        const wins = [
+          "🎈 Marta rozgromiła system – i Dominika!",
+          "🎈 Dominik... zrób kawę, bo Marta wygrała!",
+          "🎈 Balonowy ninja Marta atakuje!",
+          "🎈 Marta 1 : 0 Dominik. Ale tylko w balonach, spokojnie. 😅"
+        ];
+        return wins[Math.floor(Math.random() * wins.length)];
+      }
+      const draws = [
+        "🤝 Remis! Idealna para, nawet w balonach.",
+        "🤝 Marta i Dominik: balonowa równowaga we wszechświecie.",
+        "🤝 Remis – bo tak wygląda prawdziwa miłość.",
+        "🤝 Remis! Znowu trzeba zagrać jeszcze raz... 😈"
+      ];
+      return draws[Math.floor(Math.random() * draws.length)];
     }
 
     function createFirework(x, y) {
