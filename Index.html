@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Balonowa Bitwa – 30 urodziny</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(to top right, #ffecd2, #fcb69f);
+      text-align: center;
+    }
+    h1 {
+      margin-top: 10px;
+      color: #b22222;
+    }
+    #game {
+      position: relative;
+      width: 100vw;
+      height: 80vh;
+      overflow: hidden;
+    }
+    .balloon {
+      position: absolute;
+      padding: 10px 20px;
+      border-radius: 50%;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      animation: floatUp 5s linear infinite;
+    }
+    .marta { background: #f06292; }
+    .dominik { background: #64b5f6; }
+
+    @keyframes floatUp {
+      from { transform: translateY(100vh); opacity: 1; }
+      to { transform: translateY(-150px); opacity: 0.2; }
+    }
+
+    #score {
+      font-size: 1.2em;
+      margin: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    button:hover {
+      background: #388e3c;
+    }
+
+    /* Fajerwerki */
+    .firework {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(white, transparent);
+      pointer-events: none;
+      animation: explode 1s ease-out forwards;
+    }
+
+    @keyframes explode {
+      0% { transform: scale(0); opacity: 1; }
+      100% { transform: scale(3); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎉 30. Urodziny Dominika i Marty 🎉</h1>
+  <div id="score">
+    Kliknięcia: Dominik: <span id="dominikScore">0</span> | Marta: <span id="martaScore">0</span>
+  </div>
+  <button onclick="startGame()">Start</button>
+  <div id="game"></div>
+
+  <script>
+    const game = document.getElementById("game");
+    const dominikScoreEl = document.getElementById("dominikScore");
+    const martaScoreEl = document.getElementById("martaScore");
+
+    let dominikScore = 0;
+    let martaScore = 0;
+    let gameInterval;
+
+    function random(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function createBalloon() {
+      const balloon = document.createElement("div");
+      const isMarta = Math.random() < 0.5;
+
+      balloon.classList.add("balloon", isMarta ? "marta" : "dominik");
+      balloon.innerText = isMarta ? "Marta" : "Dominik";
+      balloon.style.left = random(5, 90) + "vw";
+      balloon.style.animationDuration = random(3, 6) + "s";
+
+      balloon.onclick = () => {
+        if (isMarta) {
+          martaScore++;
+          martaScoreEl.innerText = martaScore;
+        } else {
+          dominikScore++;
+          dominikScoreEl.innerText = dominikScore;
+        }
+        createFirework(balloon.offsetLeft, balloon.offsetTop);
+        balloon.remove();
+      };
+
+      game.appendChild(balloon);
+      setTimeout(() => balloon.remove(), 7000);
+    }
+
+    function startGame() {
+      dominikScore = 0;
+      martaScore = 0;
+      dominikScoreEl.innerText = 0;
+      martaScoreEl.innerText = 0;
+      clearInterval(gameInterval);
+      clearFireworks();
+
+      gameInterval = setInterval(createBalloon, 700);
+
+      setTimeout(() => {
+        clearInterval(gameInterval);
+        setTimeout(() => {
+          showWinner();
+        }, 600);
+      }, 20000); // 20 sekund gry
+    }
+
+    function showWinner() {
+      const message = "Koniec gry! 🎂\nDominik: " + dominikScore + "\nMarta: " + martaScore + "\n" + getWinner();
+      alert(message);
+      launchCelebration();
+    }
+
+    function getWinner() {
+      if (dominikScore > martaScore) return "🎈 Dominik wygrywa!";
+      if (martaScore > dominikScore) return "🎈 Marta wygrywa!";
+      return "💞 Remis!";
+    }
+
+    function createFirework(x, y) {
+      const fw = document.createElement("div");
+      fw.className = "firework";
+      fw.style.left = `${x}px`;
+      fw.style.top = `${y}px`;
+      fw.style.width = "10px";
+      fw.style.height = "10px";
+      fw.style.background = `radial-gradient(${randomColor()}, transparent)`;
+      game.appendChild(fw);
+      setTimeout(() => fw.remove(), 1000);
+    }
+
+    function launchCelebration() {
+      for (let i = 0; i < 30; i++) {
+        setTimeout(() => {
+          createFirework(random(0, window.innerWidth), random(0, window.innerHeight));
+        }, i * 100);
+      }
+    }
+
+    function randomColor() {
+      const colors = ["#ff1744", "#f50057", "#d500f9", "#651fff", "#2979ff", "#00e5ff", "#00e676", "#76ff03", "#ffea00", "#ff9100"];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    function clearFireworks() {
+      document.querySelectorAll('.firework').forEach(el => el.remove());
+    }
+  </script>
+
+</body>
+</html>
